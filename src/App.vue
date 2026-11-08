@@ -3,23 +3,22 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import '@dotrino/topbar'
 import { useBackLayer } from '@dotrino/nav/vue'
 import { lang, setLang, t, errorText } from './i18n.js'
-import { state, boot, flush, closeNote } from './state.js'
+import { state, boot, flush } from './state.js'
 import { getIdentity } from './services/identity.js'
 import { getReputation } from './services/reputation.js'
 import { getStore } from './services/store.js'
-import SyncBar from './components/SyncBar.vue'
-import NoteList from './components/NoteList.vue'
+import Sidebar from './components/Sidebar.vue'
 import NoteEditor from './components/NoteEditor.vue'
 
 /** @type {import('vue').Ref<import('@dotrino/topbar').DotrinoTopbar | null>} */
 const topbar = ref(null)
 
-// En el móvil el editor tapa la lista: «volver» (botón, gesto o atrás del navegador) lo cierra.
-const editorOpen = computed({
-  get: () => state.editor !== null,
-  set: (v) => { if (!v) closeNote().catch((e) => console.error('[notes] close:', e)) },
+// En el móvil el panel es un cajón encima del editor: «volver» (botón, gesto o atrás) lo cierra.
+const drawerOpen = computed({
+  get: () => state.drawer,
+  set: (v) => { state.drawer = v },
 })
-useBackLayer(editorOpen)
+useBackLayer(drawerOpen)
 
 /** @param {CustomEvent<{ lang: string }>} e */
 function onLang (e) {
@@ -84,12 +83,10 @@ onBeforeUnmount(() => {
       <button class="btn" data-testid="boot-retry" @click="boot">{{ t('boot.retry') }}</button>
     </div>
 
-    <div v-else class="layout" :class="{ editing: state.editor }">
-      <div class="side">
-        <SyncBar />
-        <NoteList />
-      </div>
-      <NoteEditor v-if="state.editor" :key="state.editor.key" />
+    <div v-else class="layout" :class="{ collapsed: state.collapsed, drawer: state.drawer }">
+      <Sidebar />
+      <div class="scrim" aria-hidden="true" @click="state.drawer = false"></div>
+      <NoteEditor :key="state.editor?.key || 'empty'" />
     </div>
   </main>
 

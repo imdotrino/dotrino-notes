@@ -6,6 +6,9 @@ const messages = {
   es: {
     boot: { loading: 'Abriendo tus notas…', retry: 'Reintentar' },
     list: {
+      title: 'Tus notas',
+      collapse: 'Plegar el panel',
+      expand: 'Ver tus notas',
       new: 'Nueva nota',
       search: 'Buscar en tus notas',
       empty: 'Todavía no tienes notas. Crea la primera con «Nueva nota».',
@@ -15,7 +18,7 @@ const messages = {
     },
     editor: {
       placeholder: 'Escribe aquí. La primera línea es el título.',
-      back: 'Volver a la lista',
+      pick: 'Elige una nota del panel o crea una nueva.',
       pin: 'Fijar arriba',
       unpin: 'Quitar de arriba',
       remove: 'Eliminar',
@@ -68,6 +71,9 @@ const messages = {
   en: {
     boot: { loading: 'Opening your notes…', retry: 'Try again' },
     list: {
+      title: 'Your notes',
+      collapse: 'Collapse the panel',
+      expand: 'Show your notes',
       new: 'New note',
       search: 'Search your notes',
       empty: 'You have no notes yet. Create the first one with “New note”.',
@@ -77,7 +83,7 @@ const messages = {
     },
     editor: {
       placeholder: 'Write here. The first line is the title.',
-      back: 'Back to the list',
+      pick: 'Pick a note from the panel or create a new one.',
       pin: 'Pin to top',
       unpin: 'Unpin',
       remove: 'Delete',

@@ -18,6 +18,8 @@ Este README es para quien desarrolla.
 | Qué se guarda y con qué forma (`notes.items`, una nota por entrada) | `src/lib/repo.js` (`@dotrino/store`) |
 | Título, orden, búsqueda, color del indicador, qué hacer con lo que llega | `src/lib/notes.js` (puro, con pruebas) |
 | Autoguardado, «Sincronizar», recarga al llegar cambios de otro aparato | `src/state.js` |
+| El panel lateral (crear, buscar, abrir, fijar, borrar; plegable, cajón en el móvil) | `src/components/Sidebar.vue` |
+| El editor (solo escribe) | `src/components/NoteEditor.vue` |
 
 **La sincronización es la del almacén.** Las notas viven en `@dotrino/store`, abierto con la
 identidad del perfil. Si el perfil está enlazado a una bóveda, el almacén respalda el hilo en

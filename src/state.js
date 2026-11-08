@@ -3,7 +3,7 @@
 import { reactive } from 'vue'
 import { getStore } from './services/store.js'
 import { listNotes, saveNote, removeNote, isNotesThread } from './lib/repo.js'
-import { mergeOpen } from './lib/notes.js'
+import { mergeOpen, sortNotes } from './lib/notes.js'
 import { errorText } from './i18n.js'
 
 /** @typedef {import('./types').Note} Note */
@@ -28,6 +28,8 @@ import { errorText } from './i18n.js'
  * @property {Editor | null} editor
  * @property {VaultBackupStatus | null} backup
  * @property {boolean} syncing          «Sincronizar» en curso
+ * @property {boolean} drawer           móvil: el panel de notas abierto como cajón
+ * @property {boolean} collapsed        pantalla ancha: el panel de notas plegado
  * @property {import('./types').Toast | null} toast
  */
 
@@ -39,8 +41,31 @@ export const state = reactive({
   editor: null,
   backup: null,
   syncing: false,
+  drawer: false,
+  collapsed: readCollapsed(),
   toast: null,
 })
+
+// Plegado o no es una preferencia de pantalla de este aparato: localStorage (§4).
+const COLLAPSED_KEY = 'notes.sidebar.collapsed'
+
+/** @returns {boolean} */
+function readCollapsed () {
+  try { return localStorage.getItem(COLLAPSED_KEY) === '1' } catch { return false }
+}
+
+/** En el móvil el panel es un cajón (se abre encima); en pantalla ancha se pliega a un lado. */
+export const NARROW = '(max-width: 799px)'
+
+/** El botón del panel: abre/cierra el cajón en el móvil, pliega/despliega en pantalla ancha. */
+export function toggleSidebar () {
+  if (matchMedia(NARROW).matches) {
+    state.drawer = !state.drawer
+    return
+  }
+  state.collapsed = !state.collapsed
+  try { localStorage.setItem(COLLAPSED_KEY, state.collapsed ? '1' : '0') } catch { /* modo privado */ }
+}
 
 /** Abre el almacén y carga las notas. Un fallo queda en `bootError`. */
 export async function boot () {
@@ -50,6 +75,8 @@ export async function boot () {
     const store = await getStore()
     watchBackup(store)
     state.notes = await listNotes()
+    // Se abre la primera nota del panel; sin notas, el editor enseña cómo empezar.
+    if (!state.editor) openFirst()
   } catch (e) {
     console.error('[notes] boot:', e)
     state.bootError = e
@@ -86,7 +113,7 @@ async function refreshFromVault () {
     ed.body = incoming.body
     ed.pinned = incoming.pinned
   } else if (action === 'close') {
-    state.editor = null
+    openFirst()
   }
 }
 
@@ -108,18 +135,25 @@ export async function syncNow () {
 
 export function newNote () {
   state.editor = { key: crypto.randomUUID(), id: null, body: '', pinned: false, created: Date.now(), dirty: false }
+  state.drawer = false
 }
 
 /** @param {Note} note */
 export async function openNote (note) {
   await flush()
-  state.editor = { key: note.id, id: note.id, body: note.body, pinned: note.pinned, created: note.created, dirty: false }
+  state.editor = editorFor(note)
+  state.drawer = false
 }
 
-/** Cierra el editor guardando lo que quede. Una nota nueva vacía no se guarda. */
-export async function closeNote () {
-  await flush()
-  state.editor = null
+/** @param {Note} note @returns {Editor} */
+function editorFor (note) {
+  return { key: note.id, id: note.id, body: note.body, pinned: note.pinned, created: note.created, dirty: false }
+}
+
+/** Abre la primera nota del panel (fijadas y recientes primero), o ninguna si no hay. */
+function openFirst () {
+  const first = sortNotes(state.notes)[0]
+  state.editor = first ? editorFor(first) : null
 }
 
 /** @type {ReturnType<typeof setTimeout> | null} */
@@ -135,11 +169,22 @@ export function editBody (body) {
   timer = setTimeout(() => { flush().catch(reportSaveError) }, AUTOSAVE_MS)
 }
 
-export async function togglePin () {
-  if (!state.editor) return
-  state.editor.pinned = !state.editor.pinned
-  state.editor.dirty = true
-  await flush()
+/**
+ * Fija o suelta una nota. Si es la abierta, va con el resto de sus cambios.
+ * @param {string} id
+ */
+export async function togglePin (id) {
+  const ed = state.editor
+  if (ed && ed.id === id) {
+    ed.pinned = !ed.pinned
+    ed.dirty = true
+    await flush()
+    return
+  }
+  const note = state.notes.find((n) => n.id === id)
+  if (!note) throw new Error(`togglePin: unknown note ${id}`)
+  const saved = await saveNote({ ...note, pinned: !note.pinned })
+  state.notes = state.notes.map((n) => (n.id === id ? saved : n))
 }
 
 /** @type {Promise<void> | null} */
@@ -167,17 +212,23 @@ export async function flush () {
   if (state.editor?.dirty) await flush()
 }
 
-/** Borra la nota abierta. */
-export async function deleteOpenNote () {
+/**
+ * Borra una nota (deja lápida: no vuelve desde otro aparato). Si es la abierta, se abre la siguiente.
+ * Sin id, borra la nota nueva todavía sin guardar.
+ * @param {string | null} id
+ */
+export async function deleteNote (id) {
   const ed = state.editor
-  if (!ed) return
-  if (timer) { clearTimeout(timer); timer = null }
-  while (saving) await saving
-  if (ed.id) {
-    await removeNote(ed.id)
-    state.notes = state.notes.filter((n) => n.id !== ed.id)
+  const isOpen = !!ed && ed.id === id
+  if (isOpen) {
+    if (timer) { clearTimeout(timer); timer = null }
+    while (saving) await saving
   }
-  state.editor = null
+  if (id) {
+    await removeNote(id)
+    state.notes = state.notes.filter((n) => n.id !== id)
+  }
+  if (isOpen) openFirst()
 }
 
 /** @param {unknown} e */

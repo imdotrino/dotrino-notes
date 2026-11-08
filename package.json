@@ -1,7 +1,7 @@
 {
   "name": "notes",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "Bloc de notas que se sincroniza entre tus aparatos a través de tu propia bóveda; las notas se guardan en tu almacén (ecosistema Dotrino).",
   "license": "MIT",
