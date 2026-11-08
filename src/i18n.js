@@ -2,7 +2,7 @@
 // <dotrino-topbar> (clave común 'dotrino.lang'); aquí solo se sigue su evento.
 import { ref } from 'vue'
 
-const messages = {
+export const messages = {
   es: {
     boot: { loading: 'Abriendo tus notas…', retry: 'Reintentar' },
     list: {
@@ -56,6 +56,13 @@ const messages = {
         'vault-off': 'Este perfil no está enlazado a una bóveda.',
         other: 'No se pudo sincronizar con tu bóveda: {message}',
       },
+    },
+    native: {
+      noProfile: 'Este teléfono todavía no tiene un perfil de Dotrino. Créalo aquí mismo o adopta uno que ya tengas.',
+      noIdentityApp: 'Tu perfil de Dotrino vive en la app «Identidad Dotrino». Instálala y vuelve aquí.',
+      createProfile: 'Crear perfil',
+      adoptProfile: 'Adoptar un perfil',
+      back: 'Volver a tus notas',
     },
     errors: {
       'identity-unreachable': 'No se pudo abrir tu identidad. Revisa la conexión e inténtalo de nuevo.',
@@ -121,6 +128,13 @@ const messages = {
         'vault-off': 'This profile is not linked to a vault.',
         other: 'Could not sync with your vault: {message}',
       },
+    },
+    native: {
+      noProfile: 'This phone has no Dotrino profile yet. Create it right here, or adopt one you already have.',
+      noIdentityApp: 'Your Dotrino profile lives in the «Dotrino Identity» app. Install it and come back here.',
+      createProfile: 'Create profile',
+      adoptProfile: 'Adopt a profile',
+      back: 'Back to your notes',
     },
     errors: {
       'identity-unreachable': 'Your identity could not be opened. Check the connection and try again.',

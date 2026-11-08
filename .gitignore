@@ -5,3 +5,12 @@ dist/
 .DS_Store
 *.log
 .env
+android/.gradle
+android/.kotlin
+android/local.properties
+android/app/build
+android/build
+ios/build
+ios/Notes/Info.plist
+ios/Notes/Notes.entitlements
+ios/Notes.xcodeproj

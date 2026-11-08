@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- «Cool & Cozy», el tema del ecosistema (@dotrino/theme), el mismo que la PWA. -->
+<resources>
+    <color name="n_bg">#F4F7F9</color>
+    <color name="n_card">#FFFFFF</color>
+    <color name="n_card2">#F1F4F6</color>
+    <color name="n_line">#E3E9ED</color>
+    <color name="n_line2">#CFD8DE</color>
+    <color name="n_text">#181C1E</color>
+    <color name="n_muted">#4A5560</color>
+    <color name="n_accent">#00658C</color>
+    <color name="n_accent_soft">#1A00658C</color>
+    <color name="n_on_accent">#FFFFFF</color>
+    <color name="n_green">#00897B</color>
+    <color name="n_yellow">#F2B705</color>
+    <color name="n_danger">#BA1A1A</color>
+    <!-- Los componentes del ecosistema (dotrino-native) con la misma paleta. -->
+    <color name="dotrino_bg">#F4F7F9</color>
+    <color name="dotrino_card">#FFFFFF</color>
+    <color name="dotrino_fg">#181C1E</color>
+    <color name="dotrino_muted">#4A5560</color>
+    <color name="dotrino_accent">#00658C</color>
+</resources>
