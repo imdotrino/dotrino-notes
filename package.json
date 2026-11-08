@@ -1,0 +1,39 @@
+{
+  "name": "notes",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Bloc de notas que se sincroniza entre tus aparatos a través de tu propia bóveda; las notas se guardan en tu almacén (ecosistema Dotrino).",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --noEmit",
+    "test": "node --test test/*.test.js"
+  },
+  "dotrino": {
+    "kind": "app",
+    "platforms": ["pwa"]
+  },
+  "dependencies": {
+    "@dotrino/compat": "0.5.1",
+    "@dotrino/identity": "0.138.0",
+    "@dotrino/install": "0.3.5",
+    "@dotrino/nav": "0.3.3",
+    "@dotrino/reputation": "0.12.6",
+    "@dotrino/store": "0.14.3",
+    "@dotrino/theme": "0.1.1",
+    "@dotrino/topbar": "0.17.2",
+    "vue": "3.5.25"
+  },
+  "devDependencies": {
+    "@dotrino/prerender": "0.1.1",
+    "@vitejs/plugin-basic-ssl": "2.3.0",
+    "@vitejs/plugin-vue": "6.0.2",
+    "typescript": "5.9.3",
+    "vite": "7.3.6",
+    "vite-plugin-pwa": "1.2.0",
+    "vue-tsc": "3.3.13"
+  }
+}
