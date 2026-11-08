@@ -52,3 +52,21 @@ npm run build        # → dist/
 Push a `main` → GitHub Actions construye y publica `dist/` en Pages (`notes.dotrino.com`).
 
 Licencia MIT.
+
+## Versiones nativas (Android e iOS)
+
+La PWA va delante (CONVENCIONES §16). `android/` (Kotlin, vistas nativas) e `ios/` (SwiftUI) usan
+[`dotrino-native`](https://github.com/imdotrino/dotrino-native) como submódulo en `native/`, el mismo
+hilo `notes.items` que la web y el respaldo de la bóveda, así que las notas van y vienen entre la
+web y el teléfono. Los textos salen de `src/i18n.js`: tras cambiarlos, `npm run native:i18n`.
+
+```bash
+git submodule update --init
+cd android && ./gradlew :app:testDebugUnitTest :app:assembleDebug
+cd ios && xcodegen generate && xcodebuild -project Notes.xcodeproj -scheme Notes \
+  -destination 'platform=iOS Simulator,name=iPhone 15 Pro' test
+```
+
+Android habla con la app «Identidad Dotrino», que solo atiende a apps firmadas con la misma llave:
+para probar contra ella hay que compilar el release con la llave de subida
+(`dotrino-env run --ns claude -- ./gradlew --no-daemon :app:assembleRelease`).
