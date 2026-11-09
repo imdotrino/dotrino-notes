@@ -71,7 +71,8 @@ final class StoreScreenshotsUITests: XCTestCase {
     private func removeAll(_ app: XCUIApplication) {
         while app.buttons["note-remove"].firstMatch.exists {
             app.buttons["note-remove"].firstMatch.tap()
-            let confirm = app.buttons["remove-confirm"]
+            // A confirmationDialog drops the identifier: the button is found by its text.
+            let confirm = app.buttons.matching(NSPredicate(format: "label IN %@", ["Sí, eliminar", "Yes, delete"])).firstMatch
             XCTAssertTrue(confirm.waitForExistence(timeout: 5))
             confirm.tap()
             sleep(1)
