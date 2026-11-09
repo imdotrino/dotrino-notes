@@ -78,6 +78,18 @@ targets:
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Notes.app/Notes"
         BUNDLE_LOADER: "$(TEST_HOST)"
 
+  # Las capturas de la App Store (store/graphics/ios/); se salta salvo con TEST_RUNNER_SHOT_DIR.
+  NotesUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [NotesUITests]
+    dependencies:
+      - target: Notes
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Notes
+
 
 schemes:
   Notes:
@@ -85,4 +97,4 @@ schemes:
       targets:
         Notes: all
     test:
-      targets: [NotesTests]
+      targets: [NotesTests, NotesUITests]
