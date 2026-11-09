@@ -173,3 +173,14 @@ HOW IT KEEPS WHAT'S YOURS
 • All the code is open (MIT license) and can be reviewed.
 
 You can also use Notes for free in the browser, with nothing to install: https://notes.dotrino.com/
+
+## Gráficos (`store/graphics/`)
+
+| Archivo | Para |
+|---|---|
+| `icon-512.png` | Play: icono de la app (de `public/icon.svg`) |
+| `feature-es-1024x500.png`, `feature-en-1024x500.png` | Play: gráfico destacado, por idioma |
+| `android-{es,en}-{1,2,3}-*.png` | Play: capturas de teléfono 1080×1920 (emulador `dotrino-test`, `wm size 1080x1920`) |
+| `ios/iphone-{es,en}-{1,2,3}-*.png` | App Store: capturas de iPhone 6,9" 1320×2868 (simulador iPhone 16 Pro Max, prueba `NotesUITests`) |
+
+La app de iOS es solo de iPhone (`TARGETED_DEVICE_FAMILY: 1`): no lleva capturas de iPad.
