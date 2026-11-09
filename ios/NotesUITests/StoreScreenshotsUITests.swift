@@ -4,7 +4,12 @@ import XCTest
 /// pins one and saves three screens: the list, a note and a search. Only runs when asked:
 ///
 ///   TEST_RUNNER_SHOT_DIR=/tmp/shots xcodebuild test -project Notes.xcodeproj -scheme Notes \
-///     -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max' -only-testing:NotesUITests
+///     -destination 'platform=iOS Simulator,id=<SIM>' -only-testing:NotesUITests
+///
+/// and, at the same time, the loop that takes them (see `shot`):
+///
+///   while :; do for r in /tmp/shots/*.ready; do [ -e "$r" ] && sleep 1 && \
+///     xcrun simctl io <SIM> screenshot "${r%.ready}.png" && rm "$r"; done; sleep 0.3; done
 ///
 /// It DELETES every note of the simulator's active profile first: never point it at a real one.
 final class StoreScreenshotsUITests: XCTestCase {
@@ -83,8 +88,17 @@ final class StoreScreenshotsUITests: XCTestCase {
         XCTAssertTrue(app.buttons["new-note"].waitForExistence(timeout: 5))
     }
 
+    /// The screenshot is taken by the Mac, not here: `XCUIScreen.screenshot()` times out on the
+    /// simulator. The test leaves `<name>.ready` and waits until a host loop runs
+    /// `xcrun simctl io <sim> screenshot <name>.png` and deletes the marker.
     private func shot(_ dir: String, _ lang: String, _ name: String) throws {
-        let url = URL(fileURLWithPath: dir).appendingPathComponent("iphone-\(lang)-\(name).png")
-        try XCUIScreen.main.screenshot().pngRepresentation.write(to: url)
+        let base = URL(fileURLWithPath: dir).appendingPathComponent("iphone-\(lang)-\(name)")
+        let ready = base.appendingPathExtension("ready")
+        try Data().write(to: ready)
+        let deadline = Date().addingTimeInterval(60)
+        while FileManager.default.fileExists(atPath: ready.path) {
+            if Date() > deadline { XCTFail("store screenshots: nobody took \(base.lastPathComponent)"); return }
+            Thread.sleep(forTimeInterval: 0.3)
+        }
     }
 }
