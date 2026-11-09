@@ -1,2 +1,3 @@
 "CFBundleDisplayName" = "Dotrino Notas";
 "CFBundleName" = "Dotrino Notas";
+"NSCameraUsageDescription" = "Para escanear el código de emparejamiento de tu bóveda.";

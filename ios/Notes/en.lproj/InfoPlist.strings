@@ -1,2 +1,3 @@
 "CFBundleDisplayName" = "Dotrino Notes";
 "CFBundleName" = "Dotrino Notes";
+"NSCameraUsageDescription" = "To scan your vault's pairing code.";
