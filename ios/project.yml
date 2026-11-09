@@ -17,7 +17,7 @@ settings:
     DEVELOPMENT_TEAM: P7G853375S
     CODE_SIGN_STYLE: Automatic
     MARKETING_VERSION: 0.3.0
-    CURRENT_PROJECT_VERSION: 1
+    CURRENT_PROJECT_VERSION: 2
 packages:
   DotrinoNative:
     path: ../native
@@ -35,7 +35,10 @@ targets:
     info:
       path: Notes/Info.plist
       properties:
-        CFBundleDisplayName: Notes
+        # «Notes» a secas es el nombre de la app de Apple: App Store Connect lo rechaza (ITMS-90129).
+        # El mismo nombre que la ficha; en español lo cambia es.lproj/InfoPlist.strings.
+        CFBundleDisplayName: Dotrino Notes
+        CFBundleName: Dotrino Notes
         # La versión sale de MARKETING_VERSION / CURRENT_PROJECT_VERSION (§16.3); sin esto xcodegen
         # escribía 1.0 (1) fijo y TestFlight recibía siempre la misma versión.
         CFBundleShortVersionString: $(MARKETING_VERSION)
